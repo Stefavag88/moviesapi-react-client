@@ -1,6 +1,8 @@
 {
   "title": "Καλώς ορίσατε !",
-  "spanish-lang-caption": "Ισπανικά", 
-  "english-lang-caption": "Αγγλικά",
-  "greek-lang-caption": "Ελληνικά"
+  "LanguageMenu.spanish.title": "Ισπανικά", 
+  "LanguageMenu.english.title": "Αγγλικά",
+  "LanguageMenu.greek.title": "Ελληνικά",
+  "Header.allMovies.title": "Ταινίες",
+  "Header.newMovie.title": "Νέα"
 }

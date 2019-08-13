@@ -7,6 +7,7 @@ const defaultLanguage = getLanguageInfo("en");
 const LanguageContext = React.createContext(defaultLanguage.code);
 
 const LanguageProvider = props => {
+  
   const [state, setState] = useState({ ...defaultLanguage });
   const localeKey = getLanguageFirstPart(state.code);
 

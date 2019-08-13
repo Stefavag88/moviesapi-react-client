@@ -27,7 +27,7 @@ const LanguageMenuContainer = () => {
           height="26"
           />
         <span className="language-caption">
-          <FormattedMessage id={`${lang.language.toLowerCase()}-lang-caption`}/>
+          <FormattedMessage id={`LanguageMenu.${lang.language.toLowerCase()}.title`}/>
         </span>
       </Menu.Item>
     );
@@ -41,7 +41,7 @@ const LanguageMenuContainer = () => {
 
   return (
     <div className="language-menu-container">
-      <Dropdown overlay={LanguageMenu}>
+      <Dropdown className="language-selection-dropdown" overlay={LanguageMenu}>
         <Button>
         <img 
           src={`/countryFlags/${getLanguageFirstPart(state.code)}.svg`}
@@ -50,7 +50,7 @@ const LanguageMenuContainer = () => {
           height="24"
           />
          <span className="language-caption">
-          <FormattedMessage id={`${state.language.toLowerCase()}-lang-caption`}/>
+          <FormattedMessage id={`LanguageMenu.${state.language.toLowerCase()}.title`}/>
         </span>
         </Button>
       </Dropdown>

@@ -1,6 +1,8 @@
 {
   "title": "Welcome!!",
-  "spanish-lang-caption": "Spanish", 
-  "english-lang-caption": "English",
-  "greek-lang-caption": "Greek"
+  "LanguageMenu.spanish.title": "Spanish", 
+  "LanguageMenu.english.title": "English",
+  "LanguageMenu.greek.title": "Greek",
+  "Header.allMovies.title": "Movies",
+  "Header.newMovie.title": "New"
 }
