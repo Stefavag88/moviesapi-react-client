@@ -7,7 +7,8 @@ i18n
   .init({
     resources: {
       "en-US": messages.en,
-      "el-GR": messages.el
+      "el-GR": messages.el, 
+      "es-ES": messages.es
     },
     lng: "en-US",
     fallbackLng: "en-US",
