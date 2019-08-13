@@ -1,51 +1,49 @@
-import React, {useState} from "react";
+import React, { useContext } from "react";
 import { Menu, Dropdown, Button } from "antd";
-import { LanguageProvider } from "./Context";
-import supportedLanguages, { getFlagCode } from "./languages";
+import supportedLanguages, {
+  getFlagCode,
+  getLanguageFirstPart
+} from "./languages";
 import Flag from "react-flags";
+import LanguageContext from ".";
 
-const MenuItems = Object.values(supportedLanguages).map(lang => {
-    return <Menu.Item key={lang.code}>
-      {/* <Flag
-        name={getFlagCode(lang.code)}
-        format="png"
-        pngSize={64}
-        shiny={true}
-        alt={`${lang.language}`}
-      /> */}
-      <span>{lang.language}</span>
-    </Menu.Item>
-});
+const LanguageMenuContainer = () => {
+  const [state, setState] = useContext(LanguageContext);
 
+  const handleLangSelection = ev => {
+    const lang = supportedLanguages[getLanguageFirstPart(ev.key)];
 
+    setState(state => ({ ...state, ...lang }));
+  };
 
+  const MenuItems = Object.values(supportedLanguages).map(lang => {
+    return (
+      <Menu.Item key={lang.code}>
+        {/* <Flag
+          name={getFlagCode(lang.code)}
+          format="png"
+          pngSize={64}
+          shiny={true}
+          alt={`${lang.language}`}
+        /> */}
+        <span>{lang.language}</span>
+      </Menu.Item>
+    );
+  });
 
-const Language = ({ lang, children, handleMenuClick }) => {
-
-  const [selectedLang, setSelectedLang] = useState(null);
-
-  const handleLangSelection = (ev) => {
-
-    console.log("HANDLE SELECTION1!!", ev);
-    setSelectedLang(ev.key);
-    handleMenuClick(ev.key);
-  }
-
-  const LanguageMenu = (<Menu onClick={handleLangSelection}>
-    {MenuItems}
-</Menu>);
+  const LanguageMenu = (
+    <div className="language-menu">
+      <Menu onClick={handleLangSelection}>{MenuItems}</Menu>;
+    </div>
+  )
 
   return (
-    <div className="language-selection-dropdown">
+    <div className="language-menu-container">
       <Dropdown overlay={LanguageMenu}>
-      <Button>
-        {selectedLang ? selectedLang : "Select.."} 
-      </Button>
+        <Button>{state.language ? state.language : "Select.."}</Button>
       </Dropdown>
-      {/* <LanguageProvider value={lang}>...children</LanguageProvider> */}
     </div>
   );
 };
 
-
-export default Language;
+export default LanguageMenuContainer;

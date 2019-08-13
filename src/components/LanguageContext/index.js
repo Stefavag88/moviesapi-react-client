@@ -1,28 +1,25 @@
-import React, { useState, Children } from 'react';
-import { LanguageProvider } from './Context';
-import supportedLanguages,{getLanguageInfo, getLanguageFirstPart} from './languages';
-import Language from './LanguageMenu';
+import React, { useState } from "react";
+import { getLanguageInfo, getLanguageFirstPart } from "./languages";
+import { IntlProvider } from "react-intl";
+import messages from "../../i18n/locales";
 
+const defaultLanguage = getLanguageInfo("en");
+const LanguageContext = React.createContext(defaultLanguage.code);
 
-const LanguageContextProvider = ({children}) => {
+const LanguageProvider = props => {
+  const [state, setState] = useState({ ...defaultLanguage });
+  const localeKey = getLanguageFirstPart(state.code);
 
-    const [language, setLanguage] = useState(getLanguageInfo("en"));
+  return (
+    <div className="language-provider-container">
+      <LanguageContext.Provider value={[state, setState]}>
+        <IntlProvider locale={localeKey} messages={messages[localeKey]}>
+          {props.children}
+        </IntlProvider>
+      </LanguageContext.Provider>
+    </div>
+  );
+};
 
-
-    const handleLanguageSet = (value) => {
-
-        const localeKey = getLanguageFirstPart(value);
-        const newLang = supportedLanguages[localeKey];
-
-
-        console.log("SETTING LANG...", newLang);
-        setLanguage(newLang);
-    }
-
-    return <LanguageProvider value={language}>
-        <Language handleMenuClick={handleLanguageSet}/>
-        {children}
-    </LanguageProvider>;
-}
-
-export default LanguageContextProvider;
+export default LanguageContext;
+export { LanguageProvider };
