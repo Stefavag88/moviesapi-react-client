@@ -8,12 +8,12 @@ const LanguageContext = React.createContext(defaultLanguage.code);
 
 const LanguageProvider = props => {
   
-  const [state, setState] = useState({ ...defaultLanguage });
-  const localeKey = getLanguageFirstPart(state.code);
+  const [lang, setLang] = useState({ ...defaultLanguage });
+  const localeKey = getLanguageFirstPart(lang.code);
 
   return (
     <div className="language-provider-container">
-      <LanguageContext.Provider value={[state, setState]}>
+      <LanguageContext.Provider value={[lang, setLang]}>
         <IntlProvider locale={localeKey} messages={messages[localeKey]}>
           {props.children}
         </IntlProvider>
