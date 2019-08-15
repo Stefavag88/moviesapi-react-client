@@ -6,6 +6,7 @@ import HeaderMenu from './components/Header/index';
 
 import "./App.css";
 import "antd/dist/antd.css";
+import MoviesGrid from "./components/MoviesGrid";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       </header>
       <main className="main-content">
         <Home />
+        <MoviesGrid/>
       </main>
       </LanguageProvider>
     </div>

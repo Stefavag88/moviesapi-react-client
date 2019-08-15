@@ -4,5 +4,9 @@
   "LanguageMenu.english.title": "Αγγλικά",
   "LanguageMenu.greek.title": "Ελληνικά",
   "Header.allMovies.title": "Ταινίες",
-  "Header.newMovie.title": "Νέα"
+  "Header.newMovie.title": "Νέα",
+  "MoviesGrid.movieColumn.title": "Ταινία", 
+  "MoviesGrid.genresColumn.title": "Κατηγορίες",
+  "MoviesGrid.contribColumn.title": "Συνεισφέρων",
+  "MoviesGrid.contribTypesColumn.title": "Ρόλος"
 }

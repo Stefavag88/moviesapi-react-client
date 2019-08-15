@@ -4,5 +4,9 @@
   "LanguageMenu.english.title": "Ingles",
   "LanguageMenu.greek.title": "Griego",
   "Header.allMovies.title": "Peliculas",
-  "Header.newMovie.title": "Nueva"
+  "Header.newMovie.title": "Nueva",
+  "MoviesGrid.movieColumn.title": "Pelicula", 
+  "MoviesGrid.genresColumn.title": "Generos",
+  "MoviesGrid.contribColumn.title": "Contribuyente",
+  "MoviesGrid.contribTypesColumn.title": "Tipo"
 }
