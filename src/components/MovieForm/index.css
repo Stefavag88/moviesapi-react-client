@@ -26,20 +26,36 @@
 .form-input{
     width: 60%;
 }
-.form-input-deletable{
-    width: 50%;
+
+.form-group-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width:100%;
+    border: 1px solid #fafafa;
+    border-radius: 3px;
+    padding: 1em;
+    margin-top: 1em;
+    background: #fafafa;
 }
+
+.form-group-items{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 
 .dynamic-delete-button {
     cursor: pointer;
     position: relative;
     top: 4px;
     font-size: 24px;
-    color: #999;
+    color: #40a9ff;
     transition: all 0.3s;
   }
   .dynamic-delete-button:hover {
-    color: #777;
+    color: #bae7ff;
   }
   .dynamic-delete-button[disabled] {
     cursor: not-allowed;

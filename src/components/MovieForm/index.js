@@ -1,99 +1,98 @@
-import React from "react";
-import { Form, Icon, Input, Button, Menu, Dropdown } from "antd";
+import React, { useState, useContext } from "react";
+import { Form, Icon, Input, Button, Menu, Dropdown, message } from "antd";
 import "./index.css";
-import supportedLanguages from "./../LanguageContext/languages";
+import supportedLanguages, {
+  getLanguageFirstPart
+} from "./../LanguageContext/languages";
+import LanguageContext from './../LanguageContext/index';
 
-const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 4 }
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 20 }
-    }
-  };
-  const formItemLayoutWithOutLabel = {
-    wrapperCol: {
-      xs: { span: 24, offset: 0 },
-      sm: { span: 20, offset: 4 }
-    }
-  };
 
 const languagesEnglishExcluded = Object.values(supportedLanguages).filter(
-    c => c.code !== "en-US"
-  );
+  c => c.code !== "en-US"
+);
 
-class MovieForm extends React.Component {
-  state = {
-    languages: languagesEnglishExcluded
-  };
+const MovieForm = ({ form, onSuccess}) => {
+  const [langCode] = useContext(LanguageContext);
+  const [languages, setLanguages] = useState(languagesEnglishExcluded);
 
-  remove = langCode => {
-    const { form } = this.props;
-    // can use data-binding to get
+  const remove = lang => {
     const keys = form.getFieldValue("keys");
 
-    // can use data-binding to set
     form.setFieldsValue({
-      keys: keys.filter(key => key.code !== langCode.code)
+      keys: keys.filter(key => key.code !== lang.code)
     });
 
-    this.setState((state, props) => {
-      return {
-        languages: [...state.languages, langCode]
-      };
-    });
+    setLanguages([...languages, lang]);
   };
 
-  add = lang => {
-    const { form } = this.props;
+  const add = lang => {
+    if (languages.length === 0) return;
 
-    if (this.state.languages.length === 0) return;
-    // can use data-binding to get
     const keys = form.getFieldValue("keys");
     const nextKeys = keys.concat(lang);
 
-    // can use data-binding to set
-    // important! notify form to detect changes
     form.setFieldsValue({
       keys: nextKeys
     });
 
-    const toRemove = [...this.state.languages].find(c => 
-        c.code === lang.code
-    );
+    const toRemove = [...languages].find(c => c.code === lang.code);
 
-    this.setState((state, props) => {
-      return {
-        languages: [...state.languages].filter(c => 
-            c.code !== toRemove.code
-        )
-      };
-    });
+    setLanguages([...languages].filter(c => c.code !== toRemove.code));
   };
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    form.validateFields((err, values) => {
       if (!err) {
         console.log("Received values of form: ", values);
+        const request = {
+          title: values.title,
+          description: values.description,
+          translations: []
+        };
+
+        const langCodes = values.keys.map(k => k.code);
+
+        langCodes.forEach(c => {
+          request.translations.push({
+            langCode: c,
+            title: values.languages[c].title,
+            description: values.languages[c].description
+          });
+        });
+
+        const lang = langCode.code.replace("-", "_");
+        fetch(`https://localhost:5001/api/${lang}/movies`, {
+            method:'POST', 
+            body: JSON.stringify(request),
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(res => res.json())
+        .then(result => {
+            if(result.success)
+                message.success('Movie Created');
+            else
+                message.error(result.errorMessage)
+            
+            setTimeout(() => {
+                onSuccess();
+            }, 1000)
+            });
+
       }
     });
   };
 
-  chooseLanguage = ev => {
-    const lang = this.state.languages.find(l => l.code === ev.key);
+  const chooseLanguage = ev => {
+    const lang = languages.find(l => l.code === ev.key);
 
-    if (!lang) return;
-
-    this.add(lang);
+    if (lang) add(lang);
   };
 
-  languagesDropdown = () => {
+  const languagesDropdown = () => {
     const menu = (
-      <Menu onClick={this.chooseLanguage}>
-        {this.state.languages.map(l => {
+      <Menu onClick={chooseLanguage}>
+        {languages.map(l => {
           return (
             <Menu.Item key={l.code} value={l.language}>
               {l.language}
@@ -112,63 +111,97 @@ class MovieForm extends React.Component {
     );
   };
 
-  render() {
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-   
-    getFieldDecorator("keys", { initialValue: [] });
-    const keys = getFieldValue("keys");
+  const { getFieldDecorator, getFieldValue } = form;
 
-    console.log("KEYS??", keys);
+  getFieldDecorator("keys", { initialValue: [] });
+  const keys = getFieldValue("keys");
 
-    const formItems = keys.map((k, index) => (
-      <Form.Item
-        className="form-input"
-        label={`${k.language} Title`}
-        required={true}
-        key={k.code}
-      >
-        {getFieldDecorator(`languages[${k.code}]`, {
-          validateTrigger: ["onChange", "onBlur"],
-          rules: [
-            {
-              required: true,
-              whitespace: true,
-              message: `Add ${k.language} title or remove`
-            }
-          ]
-        })(
-          <Input
-            placeholder={`Title...`}
-            style={{ width: "95%", marginRight: 8 }}
-          />
-        )}
-
-        <Icon
-          className="dynamic-delete-button"
-          type="minus-circle-o"
-          onClick={() => this.remove(k)}
-        />
-      </Form.Item>
-    ));
+  const formItems = keys.map((k, index) => {
+    const titleKey = `title_${getLanguageFirstPart(k.code)}`;
+    const descriptionKey = `description_${getLanguageFirstPart(k.code)}`;
 
     return (
-      <Form onSubmit={this.handleSubmit} className="movie-form">
-        {this.state.languages.length > 0 && this.languagesDropdown()}
+      <div className="form-group-container">
+        <div className="form-group-items">
+          <Form.Item
+            className="form-input"
+            label={`${k.language} Title`}
+            required={true}
+            key={titleKey}
+          >
+            {getFieldDecorator(`languages[${k.code}]['title']`, {
+              validateTrigger: ["onChange", "onBlur"],
+              rules: [
+                {
+                  required: true,
+                  whitespace: true,
+                  message: `Add ${k.language} title or remove`
+                },
+                { max: 50, message: "50 characters maximum allowed " }
+              ]
+            })(
+              <Input
+                placeholder={`Title...`}
+                style={{ width: "95%", marginRight: 8 }}
+              />
+            )}
+          </Form.Item>
+          <Form.Item
+            className="form-input"
+            label={`${k.language} Description`}
+            required={false}
+            key={descriptionKey}
+          >
+            {getFieldDecorator(`languages[${k.code}]['description']`, {
+              validateTrigger: ["onChange", "onBlur"]
+            })(
+              <Input.TextArea
+                rows={4}
+                placeholder={`Summary...`}
+                style={{ width: "95%", marginRight: 8 }}
+              />
+            )}
+          </Form.Item>
+        </div>
+
+        <div className="form-group-buttons">
+          <Icon
+            className="dynamic-delete-button"
+            type="minus-circle-o"
+            onClick={() => remove(k)}
+          />
+        </div>
+      </div>
+    );
+  });
+
+  return (
+    <Form onSubmit={handleSubmit} className="movie-form">
+      {languages.length > 0 && languagesDropdown()}
+      <div className="form-group-items">
         <Form.Item className="form-input" label="English Title">
           {getFieldDecorator("title", {
-            rules: [{ required: true, message: "English Title is mandatory" }]
-          })(<Input placeholder="Title..."/>)}
+            rules: [
+              { required: true, message: "English Title is mandatory" },
+              { max: 50, message: "50 characters maximum allowed " }
+            ]
+          })(<Input placeholder="Title..." />)}
+        </Form.Item>
+        <Form.Item className="form-input" label="English Summary">
+          {getFieldDecorator("description", {
+            rules: []
+          })(<Input.TextArea rows={4} placeholder="Summary..." />)}
         </Form.Item>
         {formItems}
-        <Form.Item className="submit-form-btn">
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    );
-  }
-}
+      </div>
+      <Form.Item className="submit-form-btn">
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+  );
+};
 
 const WrappedMovieForm = Form.create({ name: "normal_login" })(MovieForm);
 

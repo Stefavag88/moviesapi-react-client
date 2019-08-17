@@ -4,20 +4,6 @@ import WrappedNormalLoginForm from "../MovieForm";
 
 const { Step } = Steps;
 
-const steps = [
-  {
-    title: "Add Movie Info",
-    content: <WrappedNormalLoginForm/>
-  },
-  {
-    title: "Add Genres Info",
-    content: "Second-content"
-  },
-  {
-    title: "Last",
-    content: "Last-content"
-  }
-];
 const CreateMovieContainer = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -30,6 +16,21 @@ const CreateMovieContainer = () => {
     const previousStep = currentStep - 1;
     setCurrentStep(previousStep <= 1 ? 1 : previousStep);
   };
+
+  const steps = [
+    {
+      title: "Add Movie Info",
+      content: <WrappedNormalLoginForm onSuccess={next}/>
+    },
+    {
+      title: "Add Genres Info",
+      content: "Second-content"
+    },
+    {
+      title: "Last",
+      content: "Last-content"
+    }
+  ];
 
   return (
     <div>

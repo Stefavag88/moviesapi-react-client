@@ -8,7 +8,14 @@ import "./App.css";
 import "antd/dist/antd.css";
 import MoviesGrid from "./components/MoviesGrid";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import CreateMovieContainer from './components/CreateMovieContainer/index';
+import CreateMovieContainer from "./components/CreateMovieContainer/index";
+import { message } from "antd";
+
+message.config({
+  top: 50,
+  duration: 3,
+  maxCount: 3
+});
 
 function App() {
   return (
