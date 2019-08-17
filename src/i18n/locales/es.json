@@ -8,5 +8,11 @@
   "MoviesGrid.movieColumn.title": "Pelicula", 
   "MoviesGrid.genresColumn.title": "Generos",
   "MoviesGrid.contribColumn.title": "Contribuyente",
-  "MoviesGrid.contribTypesColumn.title": "Tipo"
+  "MoviesGrid.contribTypesColumn.title": "Tipo",
+  "MoviesGrid.expandIcon.tooltip": "Contributors and roles",
+  "DeleteButton.recordSelected.confirmationText": "This will physically delete {recordName}. Continue ?",
+  "DeleteButton.noRecordSelected.confirmationText": "No record selected",
+  "Common.Continue.title": "Continue?",
+  "Common.yes.title": "Si",
+  "Common.no.title": "No"
 }

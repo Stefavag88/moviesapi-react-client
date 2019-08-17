@@ -8,5 +8,11 @@
   "MoviesGrid.movieColumn.title": "Ταινία", 
   "MoviesGrid.genresColumn.title": "Κατηγορίες",
   "MoviesGrid.contribColumn.title": "Συνεισφέρων",
-  "MoviesGrid.contribTypesColumn.title": "Ρόλος"
+  "MoviesGrid.contribTypesColumn.title": "Ρόλος",
+  "MoviesGrid.expandIcon.tooltip": "Συνεισφέροντες και ρόλοι",
+  "DeleteButton.recordSelected.confirmationText": "Θα διαγραφεί οριστικά η εγγραφή {recordName}. Συνέχεια ;",
+  "DeleteButton.noRecordSelected.confirmationText": "Δεν έχει επιλεγεί εγγραφή",
+  "Common.Continue.title": "Συνέχεια ;",
+  "Common.yes.title": "Ναι",
+  "Common.no.title": "Οχι"
 }

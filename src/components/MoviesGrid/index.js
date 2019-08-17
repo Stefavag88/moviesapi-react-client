@@ -1,87 +1,136 @@
-import React, {useContext, useState} from "react";
-import { Table} from "antd";
-import { FormattedMessage } from 'react-intl';
-import LanguageContext from '../LanguageContext';
-import { useAPI } from "react-api-hooks";
+import React, { useContext, useState } from "react";
+import { Table, Button, Alert } from "antd";
+import { FormattedMessage } from "react-intl";
+import LanguageContext from "../LanguageContext";
+import useFetch from "react-fetch-hook";
+import createTrigger from "react-use-trigger";
+import useTrigger from "react-use-trigger/useTrigger";
 
+import ExpandIcon from "./../ExpandIcon";
+import DeleteButton from "./../DeleteButton";
+import { request } from "http";
+import ContributorDetailsRow from './ContributorDetailsRow';
+
+const requestTrigger = createTrigger()
+
+
+const getArrayFilters = (source, propName) => {
+  if (!source) return [];
+
+  const results = source.reduce((acc, val) => {
+    val[propName].forEach(v => {
+      if (!acc.find(gen => gen.id === v.id)) acc.push(v);
+    });
+
+    return acc;
+  }, []);
+
+  const distinct = new Set(results);
+
+  return [...distinct].map(g => {
+    return {
+      value: g.id,
+      text: g.title
+    };
+  });
+};
 
 const MoviesGrid = () => {
-
   const [lang] = useContext(LanguageContext);
-  const langCode = lang.code.replace('-','_');
-
-  const urlWithLang = `https://localhost:5001/api/${langCode}/movies`;
-
-  const {data, error, isLoading } = useAPI(urlWithLang);
-
+  const langCode = lang.code.replace("-", "_");
+  const urlWithLang = `https://localhost:5001/api/${langCode}/movies`
   const [sortedInfo, setSortedInfo] = useState({});
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [selectedRow, setSelectedRow] = useState({ id: null, title: "" });
+
+  const requestTriggerValue = useTrigger(requestTrigger);
+  const { isLoading, data } = useFetch(urlWithLang, {depends:[requestTriggerValue]});
 
   const columns = [
-    { 
-      title: <FormattedMessage id="MoviesGrid.movieColumn.title"/>,
-      dataIndex: "title", 
-      key: "movieName", 
+    {
+      title: <FormattedMessage id="MoviesGrid.movieColumn.title" />,
+      dataIndex: "title",
+      key: "movieName",
       sorter: (a, b) => a.movieCode.localeCompare(b.movieCode),
-      sortOrder: sortedInfo.columnKey === 'movieName' && sortedInfo.order,
+      sortOrder: sortedInfo.columnKey === "movieName" && sortedInfo.order
     },
-    { 
-      title: <FormattedMessage id="MoviesGrid.genresColumn.title"/>, 
-      dataIndex: "genres", 
-      key: "genresConcat", 
+    {
+      title: <FormattedMessage id="MoviesGrid.genresColumn.title" />,
+      dataIndex: "genres",
+      key: "genresConcat",
       render: gen => gen.map(g => g.title).join(", "),
       sorter: (a, b) => a.genres[0].title.localeCompare(b.genres[0].title),
-      sortOrder: sortedInfo.columnKey === 'genresConcat' && sortedInfo.order,
+      sortOrder: sortedInfo.columnKey === "genresConcat" && sortedInfo.order,
+      filters: getArrayFilters(data, "genres"),
+      filteredValue: filteredInfo.genresConcat || null,
+      onFilter: (value, record) => record.genres.some(r => r.id === value)
     }
   ];
 
   const handleChange = (pagination, filters, sorter) => {
     setSortedInfo(sorter);
+    setFilteredInfo(filters);
   };
 
-  const expandedRowRender = movie => {
-
-    const columns = [
-      { 
-        title: <FormattedMessage id="MoviesGrid.contribColumn.title"/>, 
-        dataIndex: "title", 
-        key: "contrib" ,
-        sorter: (a, b) => a.title.localeCompare(b.title),
-        sortOrder: sortedInfo.columnKey === 'contrib' && sortedInfo.order,
-      },
-      { 
-        title: <FormattedMessage id="MoviesGrid.contribTypesColumn.title"/>,
-        dataIndex: "contribtypes", 
-        key: "contribtypes", 
-        render: type => type.map(c => c.title).join(", "),
-        sorter: (a, b) => a.contribtypes[0].title.localeCompare(b.contribtypes[0].title),
-        sortOrder: sortedInfo.columnKey === 'contribtypes' && sortedInfo.order,
-      }
-    ];
-  
-    const {contribs} = movie;
-  
-    return <Table 
-              columns={columns} 
-              dataSource={contribs} 
-              pagination={false}
-              rowKey={record => record.id}
-              onChange={handleChange} />;
+  const rowSelection = {
+    type: "radio",
+    onChange: (selectedRowKeys, recordInfo) => {
+      setSelectedRow({ id: selectedRowKeys[0], title: recordInfo[0].title });
+    }
   };
 
-  return (<div className="movies-grid">
-    {error && <div className="error-page">Error loading data...</div>}
-    <Table
-      className="movies-table-nested"
-      columns={columns}
-      expandedRowRender={expandedRowRender}
-      dataSource={data}
-      loading={isLoading}
-      rowKey={record => record.id}
-      size={'small'}
-      onChange={handleChange}
-    />
-  </div>
+  const deleteMovie = async ev => {
+    try {
+      const resp = await fetch(
+        `${urlWithLang}/${selectedRow.id}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+      const success = await resp.json();
+
+      if(success)
+        requestTrigger();
+
+      return success;
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  return (
+    <div className="movies-grid">
+      <Table
+        rowSelection={rowSelection}
+        expandIcon={props => (
+          <ExpandIcon {...props} tooltipText={<FormattedMessage id="MoviesGrid.expandIcon.tooltip" />}/>
+        )}
+        className="movies-table-nested"
+        columns={columns}
+        expandedRowRender={(record) =>
+         <ContributorDetailsRow 
+            movie={record} 
+            sortedInfo={sortedInfo} 
+            handleChange={handleChange}/>
+        }
+        dataSource={data}
+        loading={isLoading}
+        rowKey={record => record.id}
+        size={"small"}
+        onChange={handleChange}
+        footer={data => (
+          <div>
+            <DeleteButton
+              recordName={selectedRow.title}
+              disabled={!selectedRow.id}
+              onDelete={deleteMovie}
+            />
+          </div>
+        )}
+      />
+    </div>
   );
-}
+};
 
 export default MoviesGrid;
