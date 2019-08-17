@@ -10,6 +10,7 @@
   "MoviesGrid.contribColumn.title": "Συνεισφέρων",
   "MoviesGrid.contribTypesColumn.title": "Ρόλος",
   "MoviesGrid.expandIcon.tooltip": "Συνεισφέροντες και ρόλοι",
+  "MoviesGrid.footer.moviesCount.title": "{moviesCount} Tαινίες",
   "DeleteButton.recordSelected.confirmationText": "Θα διαγραφεί οριστικά η εγγραφή {recordName}. Συνέχεια ;",
   "DeleteButton.noRecordSelected.confirmationText": "Δεν έχει επιλεγεί εγγραφή",
   "Common.Continue.title": "Συνέχεια ;",

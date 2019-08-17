@@ -1,18 +1,17 @@
 import React, { useContext, useState } from "react";
-import { Table, Button, Alert } from "antd";
+import { Table} from "antd";
 import { FormattedMessage } from "react-intl";
+import ExpandIcon from "./../ExpandIcon";
+import DeleteButton from "./../DeleteButton";
+import ContributorDetailsRow from './ContributorDetailsRow';
 import LanguageContext from "../LanguageContext";
 import useFetch from "react-fetch-hook";
 import createTrigger from "react-use-trigger";
 import useTrigger from "react-use-trigger/useTrigger";
 
-import ExpandIcon from "./../ExpandIcon";
-import DeleteButton from "./../DeleteButton";
-import { request } from "http";
-import ContributorDetailsRow from './ContributorDetailsRow';
+import './index.css';
 
-const requestTrigger = createTrigger()
-
+const deleteTrigger = createTrigger()
 
 const getArrayFilters = (source, propName) => {
   if (!source) return [];
@@ -39,12 +38,16 @@ const MoviesGrid = () => {
   const [lang] = useContext(LanguageContext);
   const langCode = lang.code.replace("-", "_");
   const urlWithLang = `https://localhost:5001/api/${langCode}/movies`
+
+  //state
   const [sortedInfo, setSortedInfo] = useState({});
   const [filteredInfo, setFilteredInfo] = useState({});
   const [selectedRow, setSelectedRow] = useState({ id: null, title: "" });
 
-  const requestTriggerValue = useTrigger(requestTrigger);
-  const { isLoading, data } = useFetch(urlWithLang, {depends:[requestTriggerValue]});
+  const deleteTriggerValue = useTrigger(deleteTrigger);
+
+  //fetch movies
+  const { isLoading, data } = useFetch(urlWithLang, {depends:[deleteTriggerValue]});
 
   const columns = [
     {
@@ -91,7 +94,7 @@ const MoviesGrid = () => {
       const success = await resp.json();
 
       if(success)
-        requestTrigger();
+        deleteTrigger();
 
       return success;
     } catch (err) {
@@ -102,12 +105,12 @@ const MoviesGrid = () => {
   return (
     <div className="movies-grid">
       <Table
+        className="movies-table-nested"
+        columns={columns}
         rowSelection={rowSelection}
         expandIcon={props => (
           <ExpandIcon {...props} tooltipText={<FormattedMessage id="MoviesGrid.expandIcon.tooltip" />}/>
         )}
-        className="movies-table-nested"
-        columns={columns}
         expandedRowRender={(record) =>
          <ContributorDetailsRow 
             movie={record} 
@@ -126,6 +129,12 @@ const MoviesGrid = () => {
               disabled={!selectedRow.id}
               onDelete={deleteMovie}
             />
+            <span className='grid-total-items-count'>
+              <FormattedMessage 
+                id="MoviesGrid.footer.moviesCount.title"
+                values={{moviesCount: data.length}}  
+                />
+            </span>
           </div>
         )}
       />

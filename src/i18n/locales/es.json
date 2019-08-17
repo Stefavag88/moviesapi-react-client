@@ -10,6 +10,7 @@
   "MoviesGrid.contribColumn.title": "Contribuyente",
   "MoviesGrid.contribTypesColumn.title": "Tipo",
   "MoviesGrid.expandIcon.tooltip": "Contributors and roles",
+  "MoviesGrid.footer.moviesCount.title": "{moviesCount} Peliculas",
   "DeleteButton.recordSelected.confirmationText": "This will physically delete {recordName}. Continue ?",
   "DeleteButton.noRecordSelected.confirmationText": "No record selected",
   "Common.Continue.title": "Continue?",

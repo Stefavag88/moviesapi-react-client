@@ -13,6 +13,7 @@
     "react-flags": "^0.1.18",
     "react-i18next": "^10.12.1",
     "react-intl": "^3.1.6",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.0",
     "react-use-data-loader": "0.0.3",
     "react-use-trigger": "^0.3.4"
