@@ -1,0 +1,9 @@
+.completion-container{
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    margin:1em;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 4px 8px #eaeaea;
+    width:100%;
+}

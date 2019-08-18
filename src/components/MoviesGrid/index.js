@@ -37,7 +37,7 @@ const getArrayFilters = (source, propName) => {
 const MoviesGrid = () => {
   const [lang] = useContext(LanguageContext);
   const langCode = lang.code.replace("-", "_");
-  const urlWithLang = `https://localhost:5001/api/${langCode}/movies`
+  const urlWithLang = `https://localhost:5001/api/movies/${langCode}`
 
   //state
   const [sortedInfo, setSortedInfo] = useState({});
@@ -85,7 +85,7 @@ const MoviesGrid = () => {
   const deleteMovie = async ev => {
     try {
       const resp = await fetch(
-        `${urlWithLang}/${selectedRow.id}`,
+        `https://localhost:5001/api/movies/${selectedRow.id}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" }

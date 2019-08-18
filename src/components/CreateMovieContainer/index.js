@@ -1,14 +1,22 @@
 import React, {useState} from "react";
 import { Steps, Button, message } from "antd";
-import WrappedNormalLoginForm from "../MovieForm";
+import WrappedMovieForm from "../MovieForm";
+import WrappedGenreForm from "../GenreForm";
+import WrappedContribsForm from './../ContribsForm';
+import StepsCompletion from './../StepsCompletion';
 
 const { Step } = Steps;
 
 const CreateMovieContainer = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [movieId, setMovieId] = useState(null);
 
-  const next = () => {
+  const next = (params) => {
     const nextStep = currentStep + 1;
+
+    if(params && params.movieId)
+        setMovieId(params.movieId);
+
     setCurrentStep(nextStep);
   };
 
@@ -19,47 +27,31 @@ const CreateMovieContainer = () => {
 
   const steps = [
     {
-      title: "Add Movie Info",
-      content: <WrappedNormalLoginForm onSuccess={next}/>
+      title: "Movie",
+      content: <WrappedMovieForm onSuccess={next}/>
     },
     {
-      title: "Add Genres Info",
-      content: "Second-content"
+      title: "Genres",
+      content: <WrappedGenreForm movieId={movieId} onSuccess={next}/>
     },
     {
-      title: "Last",
-      content: "Last-content"
+      title: "Contributors",
+      content: <WrappedContribsForm movieId={movieId} onSuccess={next}/>
+    },
+    {
+        title: "Finish",
+        content: <StepsCompletion/>
     }
   ];
 
   return (
-    <div>
+    <div className="create-movie-container">
       <Steps current={currentStep}>
         {steps.map(item => (
           <Step key={item.title} title={item.title} />
         ))}
       </Steps>
       <div className="steps-content">{steps[currentStep].content}</div>
-      <div className="steps-action">
-        {currentStep < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
-            Next
-          </Button>
-        )}
-        {currentStep === steps.length - 1 && (
-          <Button
-            type="primary"
-            onClick={() => message.success("Processing complete!")}
-          >
-            Done
-          </Button>
-        )}
-        {currentStep > 0 && (
-          <Button style={{ marginLeft: 8 }} onClick={() => prev()}>
-            Previous
-          </Button>
-        )}
-      </div>
     </div>
   );
 };

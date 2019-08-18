@@ -61,22 +61,29 @@ const MovieForm = ({ form, onSuccess}) => {
           });
         });
 
-        const lang = langCode.code.replace("-", "_");
-        fetch(`https://localhost:5001/api/${lang}/movies`, {
+        fetch(`https://localhost:5001/api/movies`, {
             method:'POST', 
             body: JSON.stringify(request),
             headers: { "Content-Type": "application/json" }
         })
-        .then(res => res.json())
-        .then(result => {
-            if(result.success)
+        .then(res => {
+            
+            if(res.status === 201){
                 message.success('Movie Created');
-            else
-                message.error(result.errorMessage)
+                return res.json()
+            }    
+            else{
+                message.error('Could Not create movie');
+                return;
+            }       
+
+            })
+        .then(movieId => {
+            console.log("RESPONSEjson!!", movieId);
             
             setTimeout(() => {
-                onSuccess();
-            }, 1000)
+                onSuccess({movieId});
+            }, 2000)
             });
 
       }

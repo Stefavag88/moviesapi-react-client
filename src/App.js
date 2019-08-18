@@ -13,7 +13,7 @@ import { message } from "antd";
 
 message.config({
   top: 50,
-  duration: 3,
+  duration: 2.5,
   maxCount: 3
 });
 

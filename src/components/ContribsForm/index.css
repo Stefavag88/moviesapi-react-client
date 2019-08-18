@@ -1,0 +1,78 @@
+.contrib-form{
+    padding: 1em;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 4px 8px #eaeaea;
+    border-radius: 3px;
+    margin: 1em 0;
+    align-items: flex-start;
+    min-height: 50vh;
+    min-width: 70vh;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.form-row{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.row-extra{
+    background: #fafafa;
+    border: 1px solid #fafafa;
+    border-radius: 3px;
+}
+
+.add-contrib-btn{
+    align-self: flex-end;
+}
+
+.languages-dropdown{
+    align-self: flex-end;
+}
+
+.submit-form-btn{
+    align-self: baseline;
+    justify-self: baseline;
+}
+
+.form-input{
+    width: 100%;
+}
+
+.form-group-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width:100%;
+    border: 1px solid #fafafa;
+    border-radius: 3px;
+    padding: 1em;
+    margin-top: 1em;
+    background: #fafafa;
+}
+
+.form-group-items{
+    display: flex;
+    width: 100%;
+}
+
+
+.dynamic-delete-button {
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    font-size: 24px;
+    color: #40a9ff;
+    transition: all 0.3s;
+  }
+  .dynamic-delete-button:hover {
+    color: #bae7ff;
+  }
+  .dynamic-delete-button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
