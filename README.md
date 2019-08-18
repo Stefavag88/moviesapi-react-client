@@ -23,9 +23,9 @@ Editing has not been implemented due to time limitations.
 
 2. Movie Creation With Multistep Forms
 
-Step 1: A movie can be added in any of the languages supported. (English, Greek and Spanish)
-Step 2: Genres are added
-Step 3: Contributors with their types are added
+- Step 1: A movie can be added in any of the languages supported. (English, Greek and Spanish)
+- Step 2: Genres are added
+- Step 3: Contributors with their types are added
 
 The genres and contributors step support selection of existing values only. 
 
